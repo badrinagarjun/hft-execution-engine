@@ -2,6 +2,8 @@
 
 A comprehensive quantitative trading system for optimal order execution using microstructure analysis, machine learning, and adaptive execution strategies.
 
+**🔒 Safety First**: Configured to use **Binance Futures Testnet** by default (no real money at risk). See [TESTNET_GUIDE.md](TESTNET_GUIDE.md) for details.
+
 ## Overview
 
 This project implements a complete pipeline for algorithmic execution research:

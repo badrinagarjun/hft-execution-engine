@@ -16,16 +16,31 @@ from typing import Dict, List, Optional
 class CryptoDataCapture:
     """Capture order book snapshots and trades from crypto exchanges."""
     
-    def __init__(self, exchange_name: str = 'binance', symbol: str = 'BTC/USDT'):
+    def __init__(self, exchange_name: str = 'binance', symbol: str = 'BTC/USDT', testnet: bool = True):
         """
         Initialize data capture.
         
         Args:
             exchange_name: Exchange to connect to (default: binance)
             symbol: Trading pair symbol (default: BTC/USDT)
+            testnet: Use testnet endpoints (default: True for safe testing)
         """
-        self.exchange = getattr(ccxt, exchange_name)({'enableRateLimit': True})
+        # Configure exchange with testnet support
+        exchange_config = {'enableRateLimit': True}
+        
+        # Set testnet URLs for Binance Futures
+        if testnet and exchange_name.lower() == 'binance':
+            exchange_config['urls'] = {
+                'api': {
+                    'public': 'https://testnet.binancefuture.com/fapi/v1',
+                    'private': 'https://testnet.binancefuture.com/fapi/v1',
+                }
+            }
+            exchange_config['options'] = {'defaultType': 'future'}
+        
+        self.exchange = getattr(ccxt, exchange_name)(exchange_config)
         self.symbol = symbol
+        self.testnet = testnet
         self.tick_dir = pathlib.Path('data/ticks')
         self.parquet_dir = pathlib.Path('data/parquet')
         self.tick_dir.mkdir(parents=True, exist_ok=True)
